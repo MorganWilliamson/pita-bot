@@ -2,4 +2,4 @@
 This project currently utilizes: 
 - Node.js
 - JavaScript
-- [discord.js]:(https://discord.js.org/#/)
+- [Discord.js](https://discord.js.org/#/)
