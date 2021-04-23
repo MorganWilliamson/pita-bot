@@ -24,11 +24,11 @@ client.on("message", (msg) => {
     const args = msg.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-    if (msg.content.startsWith(`${prefix}ping`)) {
+    if (command === "ping") {
         msg.channel.send("Pong!");
-    } else if (msg.content.includes("beep")) {
+    } else if (command === "beep") {
         msg.channel.send("Boop!");
-    } else if (msg.content === `${prefix}server`) {
+    } else if (command === "server") {
         // Note: Discord API refers to servers as "guilds".
         msg.channel.send(
             `Server Name: ${msg.guild.name}
@@ -36,7 +36,7 @@ client.on("message", (msg) => {
             \nServer Creation Date: ${msg.guild.createdAt}
             \nCurrent Region: ${msg.guild.region}
             `); 
-    } else if (msg.content.startsWith(`${prefix}region`)) {
+    } else if (command === "region") {
         msg.channel.send(`Current Region: ${msg.guild.region}`)
     } else if (command === 'args-info') {
         if (!args.length) {
@@ -57,7 +57,24 @@ client.on("message", (msg) => {
         });
 
         msg.channel.send(avatarList);
-    }
+    } else if (command === "prune") {
+        // Deleting messages (range of 1 - 99). 
+        const amount = parseInt(args[0]) + 1;
+
+        if (isNaN(amount)) {
+            return msg.reply("That doesn't seem to be a valid number!");
+        } else if (amount <= 1 || amount > 100) {
+            return msg.reply("Please input a number between 1 and 99.");
+        } 
+
+        // bulkDelete normally can't delete messages older than 2 weeks.
+        msg.channel.bulkDelete(amount, true).catch((err) => {
+            console.error(err);
+            msg.channel.send("There was an error trying to prune messages in this channel.");
+        });
+        // Double-check the math on this one. 
+        msg.channel.send(`${amount - 1} messages deleted.`);
+    };
 });
 
 client.login(process.env.token);
