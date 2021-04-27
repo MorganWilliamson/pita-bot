@@ -10,7 +10,7 @@ const commandFiles = fs.readdirSync("./commands")
     .filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
-    const command = require(`./config.json${file}`);
+    const command = require(`./commands/${file}`);
 
     // Set a new item in the Collection with the key as
     // the command name, and the value as the exported module.
@@ -40,9 +40,17 @@ client.on("message", (msg) => {
     const command = args.shift().toLowerCase();
 
     if (command === "ping") {
-        msg.channel.send("Pong!");
+        client.commands.get("ping").execute(msg, args);
     } else if (command === "beep") {
-        msg.channel.send("Boop!");
+        client.commands.get("beep").execute(msg, args);
+    } else if (command === "server") {
+        client.commands.get("server").execute(msg, args);
+    } else if (command === "region") {
+        client.commands.get("region").execute(msg, args);
+    } else if (command === "avatar") {
+        client.commands.get("avatar").execute(msg, args);
+    } else if (command === "prune") {
+        client.commands.get("prune").execute(msg, args);
     }
 });
 
