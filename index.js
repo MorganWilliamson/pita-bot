@@ -5,17 +5,22 @@ const { prefix } = require("./config.json");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
+// commandFolders returns an array of all subfolder names in the commands folder
+const commandFolders = fs.readdirSync("./commands");
 
 const commandFiles = fs.readdirSync("./commands")
     .filter((file) => file.endsWith(".js"));
 
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-
-    // Set a new item in the Collection with the key as
-    // the command name, and the value as the exported module.
-    client.commands.set(command.name, command);
-}
+for (const folder of commandFolders) {
+    const commandFiles = fs.readdirSync(`./commands/${folder}`).filter((file) => file.endsWith(".js"));
+    for (const file of commandFiles) {
+        const command = require(`./commands/${folder}/${file}`);
+    
+        // Set a new item in the Collection with the key as
+        // the command name, and the value as the exported module.
+        client.commands.set(command.name, command);
+    };
+};
 
 
 client.once("ready", () => {
@@ -37,13 +42,15 @@ client.on("message", (msg) => {
        array.)
     */
     const args = msg.content.slice(prefix.length).trim().split(/ +/);
-    const command = args.shift().toLowerCase();
+    const commandName = args.shift().toLowerCase();
 
     // Check that the command exists:
-    if (!client.commands.has(command)) return;
+    if (!client.commands.has(commandName)) return;
+
+    const command = client.commands.get(commandName);
 
     try {
-        client.commands.get(command).execute(msg, args);
+        command.execute(msg, args);
     } catch (err) {
         console.error(err);
         msg.reply("There was an error executing that command!");
