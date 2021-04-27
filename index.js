@@ -39,19 +39,15 @@ client.on("message", (msg) => {
     const args = msg.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-    if (command === "ping") {
-        client.commands.get("ping").execute(msg, args);
-    } else if (command === "beep") {
-        client.commands.get("beep").execute(msg, args);
-    } else if (command === "server") {
-        client.commands.get("server").execute(msg, args);
-    } else if (command === "region") {
-        client.commands.get("region").execute(msg, args);
-    } else if (command === "avatar") {
-        client.commands.get("avatar").execute(msg, args);
-    } else if (command === "prune") {
-        client.commands.get("prune").execute(msg, args);
-    }
+    // Check that the command exists:
+    if (!client.commands.has(command)) return;
+
+    try {
+        client.commands.get(command).execute(msg, args);
+    } catch (err) {
+        console.error(err);
+        msg.reply("There was an error executing that command!");
+    };
 });
 
 client.login(process.env.token);
