@@ -1,4 +1,4 @@
 # pita-bot !
 This project currently utilizes: 
-- JavaScript
+- Node.js
 - [Discord.js](https://discord.js.org/#/)
