@@ -1,7 +1,7 @@
 module.exports = {
     name: "prune", 
     aliases: ["delete", "erase"],
-    description: "Removes specified count of messages.",
+    description: "Removes a specified number of messages.",
     execute(msg, args) {
         // Zero-based numbering.
         const amount = parseInt(args[0]) + 1;
