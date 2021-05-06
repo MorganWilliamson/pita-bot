@@ -46,10 +46,11 @@ client.on("message", (msg) => {
     const args = msg.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    // Check that the command exists:
-    if (!client.commands.has(commandName)) return;
-
-    const command = client.commands.get(commandName);
+    // Command alias check
+    const command = client.commands.get(commandName)
+        || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+    
+    if (!command) return;
 
     // Server check for commands that don't work in DMs:
     if (command.guildOnly && msg.channel.type === "dm") {

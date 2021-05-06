@@ -1,5 +1,6 @@
 module.exports = {
     name: "prune", 
+    aliases: ["delete", "erase"],
     description: "Removes specified count of messages.",
     execute(msg, args) {
         // Zero-based numbering.
