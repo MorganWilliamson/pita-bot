@@ -29,7 +29,7 @@ client.once("ready", () => {
     console.log("Pita is ready!");
 });
 
-// Message handling: 
+/* Message handling: */
 client.on("message", (msg) => {
     /* 1). If the message doesn't start with the prefix or if the message is
             written by a bot, then ignore the message. (DRY) */
@@ -81,11 +81,26 @@ client.on("message", (msg) => {
     // Pulls cooldown from the command file, with a fallback of 3 secs if unspecified
     const cooldownAmount = (command.cooldown || 3) * 1000;
 
-    if (timestamps.has(message.author.id)) {
-        // ...
-    }
+    // Check if the author has already used this command
+    if (timestamps.has(msg.author.id)) {
+        // Get the timestamp for that author
+        const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
 
+        // Check current time vs expiration time
+        if (now < expirationTime) {
+            // calculate time remaining until cooldown expires
+            const timeLeft = (expirationTime - now) / 1000;
+            // inform author of time remaining
+            return msg.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+        };
+    };
 
+    // Set Timeout for cooldown execution
+    timestamps.set(msg.author.id, now);
+    // Delete entry for message author under the specified command when expired
+    setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+
+    /* Error Handling */
     try {
         command.execute(msg, args);
     } catch (err) {
