@@ -49,6 +49,11 @@ client.on("message", (msg) => {
 
     const command = client.commands.get(commandName);
 
+    // Server check for commands that don't work in DMs:
+    if (command.guildOnly && msg.channel.type === "dm") {
+        return msg.reply("I can't execute that command inside of DMs!");
+    };
+
     // Handling: user uses command without args, but command requires args
     if (command.args && !args.length) {
         let reply = msg.channel.send(`You didn't provide any arguments, ${msg.author}!`);
