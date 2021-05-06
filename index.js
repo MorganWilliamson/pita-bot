@@ -5,6 +5,8 @@ const { prefix } = require("./config.json");
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
+client.cooldowns = new Discord.Collection();
+
 // commandFolders returns an array of all subfolder names in the commands folder
 const commandFolders = fs.readdirSync("./commands");
 
@@ -64,6 +66,25 @@ client.on("message", (msg) => {
 
         return msg.channel.send(reply);
     };
+
+    /* Cooldown handling: */
+    const { cooldowns } = client;
+
+    if (!cooldowns.has(command.name)) {
+        cooldowns.set(command.name, new Discord.Collection());
+    }
+
+    // Current timestamp
+    const now = Date.now();
+    // Refers to the pairs of userIDs/timestamps for triggered commands 
+    const timestamps = cooldowns.get(command.name); 
+    // Pulls cooldown from the command file, with a fallback of 3 secs if unspecified
+    const cooldownAmount = (command.cooldown || 3) * 1000;
+
+    if (timestamps.has(message.author.id)) {
+        // ...
+    }
+
 
     try {
         command.execute(msg, args);
