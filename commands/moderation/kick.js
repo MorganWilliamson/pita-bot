@@ -1,6 +1,6 @@
 module.exports = {
     name: "kick",
-    description: "Remove a user from the server.", 
+    description: "Removes a mentioned user from the server.", 
     aliases: ["remove"],
     guildOnly: true,
     execute(msg, args) {
