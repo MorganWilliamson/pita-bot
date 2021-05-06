@@ -49,9 +49,16 @@ client.on("message", (msg) => {
 
     const command = client.commands.get(commandName);
 
+    // Handling: user uses command without args, but command requires args
     if (command.args && !args.length) {
-        return msg.channel.send(`You didn't provide any arguments, ${msg.author}!`);
-    }
+        let reply = msg.channel.send(`You didn't provide any arguments, ${msg.author}!`);
+    
+        if (command.usage) {
+            reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+        };
+
+        return msg.channel.send(reply);
+    };
 
     try {
         command.execute(msg, args);
