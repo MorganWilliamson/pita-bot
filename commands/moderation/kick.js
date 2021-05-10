@@ -3,6 +3,7 @@ module.exports = {
     description: "Removes a mentioned user from the server.", 
     aliases: ["remove"],
     guildOnly: true,
+    permissions: "KICK_MEMBERS",
     execute(msg, args) {
         // Check that at least one user is mentioned
         if (!msg.mentions.users.size) {

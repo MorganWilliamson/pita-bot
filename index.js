@@ -57,6 +57,15 @@ client.on("message", (msg) => {
         return msg.reply("I can't execute that command inside of DMs!");
     };
 
+    // Permissions check
+    // NOTE: `administrator/owner` permissions will override this
+    if (command.permissions) {
+        const authorPerms = msg.lchannel.permissionsFor(msg.author);
+        if (!authorPerms || !authorPerms.has(command.permissions)) {
+            return msg.reply("You don't have permission to do that.");
+        };
+    };
+
     // Handling: user uses command without args, but command requires args
     if (command.args && !args.length) {
         let reply = msg.channel.send(`You didn't provide any arguments, ${msg.author}!`);
